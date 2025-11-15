@@ -157,5 +157,25 @@ app.get('/dashboard', requireAuth, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+// Read page (list users)
+app.get('/read', requireAuth, async (req, res) => {
+  try {
+    const users = await User.find(); 
+    res.render('read', { users }); 
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).send('Error fetching users');
+  }
+});
+// Read API (GET all users)
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find(); 
+    res.json(users); 
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Error fetching users' });
+  }
+});
 
 
