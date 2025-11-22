@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Restaurant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f7f5f2;
+            color: #2d2d2d;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            color: #2c2172;
+            margin-bottom: 20px;
+        }
+
+       
+
+        .hero img {
+            width: 70%;
+            max-width: 600px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .cta-buttons a {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .cta-buttons a.primary {
+            background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(252, 74, 26, 0.3);
+        }
+
+        .cta-buttons a.secondary {
+            background: #fff;
+            color: #2c2172;
+            border: 2px solid #2c2172;
+        }
+
+        .cta-buttons a:hover {
+            transform: translateY(-3px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <h1>Project Restaurant</h1>
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80" alt="">
+        <div class="cta-buttons">
+            <a href="/customer" class="primary">I’m a Customer</a>
+            <a href="/login" class="secondary">Staff Login</a>
+        </div>
+    </section>
+    <footer>
+        &copy; <%= new Date().getFullYear() %> Le Chef Restaurant. All rights reserved.
+    </footer>
+</body>
+</html>
+
+
+

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Menu Item - Cloud Computing Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar-user span {
+            font-size: 16px;
+        }
+
+        .logout-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-button:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 240px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu a {
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid transparent;
+            color: #444;
+            transition: all 0.2s ease;
+        }
+
+        .menu a:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .menu a.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .menu a.primary:hover {
+            opacity: 0.9;
+        }
+
+        .menu a.active {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+            color: #667eea;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .status-message.error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .status-message.success {
+            background-color: #e8f8ef;
+            color: #1d7a3d;
+            border: 1px solid #bce5cd;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1>Cloud Computing Project</h1>
+            <div class="navbar-user">
+                <span>Welcome, <strong><%= username %></strong></span>
+                <form method="POST" action="/logout" style="display: inline;">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h3>Menu</h3>
+            <div class="menu">
+                <a href="/create" class="primary active">Create</a>
+                <a href="/read">Read</a>
+                <a href="/update">Update</a>
+                
+            </div>
+        </aside>
+
+        <div class="container">
+            <div class="card">
+                <h2>Create New Menu Item</h2>
+                <p>Fill in the form below to add a new item to the menu collection.</p>
+
+                <form method="POST" action="/create">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Name *</label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value="<%= formData.name || '' %>"
+                                placeholder="e.g. Classic Burger"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category">
+                                <option value="">Select a category</option>
+                                <% (categories || []).forEach(function(cat) { %>
+                                    <option value="<%= cat %>" <%= (formData.category === cat ? 'selected' : '') %>><%= cat %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Price *</label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="price"
+                                name="price"
+                                value="<%= formData.price || '' %>"
+                                placeholder="e.g. 12.99"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="description">Description</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="Describe the menu item (ingredients, portion size, etc.)"
+                        ><%= formData.description || '' %></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Create Item</button>
+                    </div>
+                </form>
+
+                <% if (error) { %>
+                    <div class="status-message error"><%= error %></div>
+                <% } %>
+
+                <% if (success) { %>
+                    <div class="status-message success"><%= success %></div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

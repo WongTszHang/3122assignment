@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Menu Items - Cloud Computing Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar-user span {
+            font-size: 16px;
+        }
+
+        .logout-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-button:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            width: 240px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu a {
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            border: 1px solid transparent;
+            color: #444;
+            transition: all 0.2s ease;
+        }
+
+        .menu a:hover {
+            border-color: #667eea;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .menu a.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .menu a.primary:hover {
+            opacity: 0.9;
+        }
+
+        .menu a.active {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+            color: #667eea;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        th {
+            background: #fafafa;
+            color: #333;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #667eea;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .btn-link.danger {
+            color: #c33;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .status-message.error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .status-message.success {
+            background-color: #e8f8ef;
+            color: #1d7a3d;
+            border: 1px solid #bce5cd;
+        }
+
+        .helper-text {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1>Cloud Computing Project</h1>
+            <div class="navbar-user">
+                <span>Welcome, <strong><%= username %></strong></span>
+                <form method="POST" action="/logout" style="display: inline;">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <aside class="sidebar">
+            <h3>Menu</h3>
+            <div class="menu">
+                <a href="/create" class="primary">Create</a>
+                <a href="/read">Read</a>
+                <a href="/update" class="active">Update</a>
+               
+            </div>
+        </aside>
+
+        <div class="container">
+            <div>
+                <div class="card">
+                    <h2>Menu Items</h2>
+                    <p>Click “Edit” on a row to load it into the edit form.</p>
+
+                    <% if (items && items.length > 0) { %>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% items.forEach(function(item) { %>
+                                    <tr>
+                                        <td><%= item.name %></td>
+                                        <td><%= item.category || '-' %></td>
+                                        <td><%= item.price.toFixed(2) %></td>
+                                        <td>
+                                            <div class="row-actions">
+                                                <form method="GET" action="/update">
+                                                    <input type="hidden" name="id" value="<%= item._id %>">
+                                                    <button type="submit" class="btn-link">Edit</button>
+                                                </form>
+                                                <form method="POST" action="/delete/<%= item._id %>" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <button type="submit" class="btn-link danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <p class="helper-text">No menu items found. Add items first on the Create page.</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <h2>Edit Menu Item</h2>
+                    <p class="helper-text">
+                        Select an item from the table to edit. After saving, the list refreshes automatically.
+                    </p>
+
+                    <% if (!selectedItem) { %>
+                        <p class="helper-text">No item selected. Choose an item from the table to begin editing.</p>
+                    <% } else { %>
+                        <form method="POST" action="/update/<%= selectedItem._id %>">
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value="<%= formData.name || selectedItem.name %>"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input
+                                    type="text"
+                                    id="category"
+                                    name="category"
+                                    value="<%= formData.category || selectedItem.category %>"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price">Price *</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="0"
+                                    id="price"
+                                    name="price"
+                                    value="<%= formData.price || selectedItem.price %>"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                ><%= formData.description || selectedItem.description %></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    <% } %>
+
+                    <% if (error) { %>
+                        <div class="status-message error"><%= error %></div>
+                    <% } %>
+
+                    <% if (success) { %>
+                        <div class="status-message success"><%= success %></div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
