@@ -1,0 +1,60 @@
+curl -X POST http://localhost:8099/api/menus \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "Green Curry",
+  "category": "Main Course",
+  "price": 89,
+  "description": "Spicy and creamy Thai curry"
+}'
+
+
+curl "http://localhost:8099/api/menus?category=Main%20Course&minPrice=50&maxPrice=100"
+
+curl "http://localhost:8099/api/menus/6920618dfc6605ff924cce30"
+
+
+curl -X PUT http://localhost:8099/api/menus/6920618dfc6605ff924cce30 \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "Pad Thai",
+  "category": "Main Course",
+  "price": 75,
+  "description": "Updated version of Pad Thai"
+}'
+
+
+curl -X DELETE http://localhost:8099/api/menus/6920618dfc6605ff924cce30
+
+
+
+curl "http://localhost:8099/api/menus?category=Main%20Course&maxPrice=80"
+//View current main courses under $80
+
+
+curl -X PUT http://localhost:8099/api/menus/6920618dfc6605ff924cce30 \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "Veggie Burger",
+  "category": "Main Course",
+  "price": 58,
+  "description": "Light & healthy plant-based burger"
+}'
+
+//Update "Veggie Burger" (change price to 58, new description)
+
+
+curl -X DELETE http://localhost:8099/api/menus/692196f9b44c3584eb270376
+//Delete "Green Curry"
+
+curl -X POST http://localhost:8099/api/menus \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "Tofu Teriyaki",
+  "category": "Main Course",
+  "price": 72,
+  "description": "Sweet soy-glazed tofu with steamed rice"
+}'
+
+//Add a new dish “Tofu Teriyaki”
+
+///ID must be change ///
