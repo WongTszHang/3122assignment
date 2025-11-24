@@ -6,12 +6,13 @@ curl -X POST http://localhost:8099/api/menus \
   "price": 89,
   "description": "Spicy and creamy Thai curry"
 }'
-
+//create menu item
 
 curl "http://localhost:8099/api/menus?category=Main%20Course&minPrice=50&maxPrice=100"
+//show menu item
 
 curl "http://localhost:8099/api/menus/6920618dfc6605ff924cce30"
-
+//show specify item
 
 curl -X PUT http://localhost:8099/api/menus/6920618dfc6605ff924cce30 \
 -H "Content-Type: application/json" \
@@ -21,10 +22,10 @@ curl -X PUT http://localhost:8099/api/menus/6920618dfc6605ff924cce30 \
   "price": 75,
   "description": "Updated version of Pad Thai"
 }'
-
+//update the specify menu item
 
 curl -X DELETE http://localhost:8099/api/menus/6920618dfc6605ff924cce30
-
+//delete
 
 
 curl "http://localhost:8099/api/menus?category=Main%20Course&maxPrice=80"
@@ -56,5 +57,6 @@ curl -X POST http://localhost:8099/api/menus \
 }'
 
 //Add a new dish “Tofu Teriyaki”
+
 
 ///ID must be change ///
