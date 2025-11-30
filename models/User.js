@@ -5,10 +5,10 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: function() {
-      return !this.facebookId; // Username required only if not OAuth user
+      return !this.facebookId; 
     },
     unique: true,
-    sparse: true, // Allows multiple null values
+    sparse: true, 
     trim: true,
     minlength: 3,
     maxlength: 30
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: function() {
-      return !this.facebookId; // Password required only if not OAuth user
+      return !this.facebookId;
     },
     minlength: 6
   },
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
   facebookId: {
     type: String,
     unique: true,
-    sparse: true // Allows multiple null values
+    sparse: true 
   },
   provider: {
     type: String,
@@ -43,14 +43,14 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Hash password before saving (only for local users)
+
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password') || !this.password) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-// Method to compare password
+
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };

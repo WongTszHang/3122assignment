@@ -15,7 +15,7 @@ const menuCategories = ['Appetizers', 'Main Course', 'Desserts', 'Beverages', 'S
 const app = express();
 app.set('view engine', 'ejs');
 
-// MongoDB connection
+
 const mongouri = 'mongodb+srv://s1411330:Ac330609@cluster0.44sr8ws.mongodb.net/?appName=Cluster0';
 const dbName = 'assignment';
 const collectionName = 'Menu';
@@ -24,26 +24,25 @@ mongoose.connect(mongouri, { dbName })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Middleware
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieSession({
   name: 'session',
   keys: [process.env.SESSION_SECRET || 'your-secret-key-change-in-production'],
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  maxAge: 24 * 60 * 60 * 1000 
 }));
 
-// Set EJS as view engine
+
 app.set('views', path.join(__dirname, 'views'));
 
-// Serve static files
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Passport configuration
 app.use(passport.initialize());
-// Note: We use cookie-session instead of express-session, so we handle sessions manually
 
-// Passport serialize/deserialize user
+
+
 passport.serializeUser((user, done) => {
   done(null, user._id.toString());
 });
@@ -57,7 +56,7 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Facebook OAuth Strategy
+
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_APP_ID || 'YOUR_FACEBOOK_APP_ID',
   clientSecret: process.env.FACEBOOK_APP_SECRET || 'YOUR_FACEBOOK_APP_SECRET',
@@ -66,19 +65,18 @@ passport.use(new FacebookStrategy({
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
-    // Check if user already exists with this Facebook ID
+    
     let user = await User.findOne({ facebookId: profile.id });
     
     if (user) {
-      // User exists, return it
       return done(null, user);
     }
     
-    // Check if user exists with this email (from Facebook)
+    
     if (profile.emails && profile.emails[0]) {
       user = await User.findOne({ email: profile.emails[0].value });
       if (user) {
-        // Link Facebook account to existing user
+        
         user.facebookId = profile.id;
         user.provider = 'facebook';
         await user.save();
@@ -86,7 +84,7 @@ async (accessToken, refreshToken, profile, done) => {
       }
     }
     
-    // Create new user
+    
     const newUser = new User({
       username: profile.displayName || `user_${profile.id}`,
       email: profile.emails && profile.emails[0] ? profile.emails[0].value : `${profile.id}@facebook.com`,
@@ -101,7 +99,7 @@ async (accessToken, refreshToken, profile, done) => {
   }
 }));
 
-// Authentication middleware
+
 const requireAuth = (req, res, next) => {
   if (req.session && req.session.userId) {
     return next();
@@ -109,9 +107,8 @@ const requireAuth = (req, res, next) => {
   res.redirect('/login');
 };
 
-// Routes
 
-// Public home page
+
 app.get('/', (req, res) => {
   if (req.session && req.session.userId) {
     return res.redirect('/home');
@@ -120,7 +117,6 @@ app.get('/', (req, res) => {
 });
 
 
-// Login page
 app.get('/login', (req, res) => {
   if (req.session && req.session.userId) {
     return res.redirect('/dashboard');
@@ -128,20 +124,19 @@ app.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-// Facebook OAuth routes
+
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   (req, res) => {
-    // Successful authentication
     req.session.userId = req.user._id.toString();
     req.session.username = req.user.username;
     res.redirect('/dashboard');
   }
 );
 
-// Login handler
+
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -150,19 +145,19 @@ app.post('/login', async (req, res) => {
       return res.render('login', { error: 'Please provide both username and password' });
     }
 
-    // Find user by username
+    
     const user = await User.findOne({ username });
     if (!user) {
       return res.render('login', { error: 'Invalid username or password' });
     }
 
-    // Check password
+    
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.render('login', { error: 'Invalid username or password' });
     }
 
-    // Set session
+    
     req.session.userId = user._id.toString();
     req.session.username = user.username;
     res.redirect('/dashboard');
@@ -172,7 +167,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Signup page
+
 app.get('/signup', (req, res) => {
   if (req.session && req.session.userId) {
     return res.redirect('/dashboard');
@@ -180,7 +175,7 @@ app.get('/signup', (req, res) => {
   res.render('signup', { error: null });
 });
 
-// Signup handler
+
 app.post('/signup', async (req, res) => {
   try {
     const { username, password, email } = req.body;
@@ -193,7 +188,7 @@ app.post('/signup', async (req, res) => {
       return res.render('signup', { error: 'Password must be at least 6 characters long' });
     }
 
-    // Check if user already exists
+    
     const existingUser = await User.findOne({ 
       $or: [{ username }, { email }] 
     });
@@ -202,11 +197,11 @@ app.post('/signup', async (req, res) => {
       return res.render('signup', { error: 'Username or email already exists' });
     }
 
-    // Create new user
+   
     const user = new User({ username, password, email });
     await user.save();
 
-    // Auto login after signup
+   
     req.session.userId = user._id.toString();
     req.session.username = user.username;
     res.redirect('/dashboard');
@@ -219,7 +214,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// Logout handler
+
 app.post('/logout', (req, res) => {
   req.session = null;
   res.redirect('/login');
@@ -230,14 +225,13 @@ app.get('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// Dashboard (protected route)
 app.get('/dashboard', requireAuth, (req, res) => {
   res.render('dashboard', { 
     username: req.session.username 
   });
 });
 
-// Create menu item (GET)
+
 app.get('/create', requireAuth, (req, res) => {
   res.render('create', {
     username: req.session.username,
@@ -248,7 +242,6 @@ app.get('/create', requireAuth, (req, res) => {
   });
 });
 
-// Create menu item (POST)
 app.post('/create', requireAuth, async (req, res) => {
   const { name, category, price, description } = req.body;
   const formData = { name, category, price, description };
@@ -305,7 +298,6 @@ app.post('/create', requireAuth, async (req, res) => {
   }
 });
 
-// Update menu items (GET)
 app.get('/update', requireAuth, async (req, res) => {
   try {
     const items = await Menu.find().sort({ createdAt: -1 });
@@ -347,7 +339,7 @@ app.get('/update', requireAuth, async (req, res) => {
   }
 });
 
-// Update menu item (POST)
+
 app.post('/update/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
   const { name, category, price, description } = req.body;
@@ -428,7 +420,7 @@ app.post('/update/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Delete menu item (POST)
+
 app.post('/delete/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
@@ -468,7 +460,7 @@ app.post('/delete/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Read page & search/filter (protected route) - Menu table
+
 app.get('/read', requireAuth, async (req, res) => {
   try {
     const { name, category = 'all', minPrice, maxPrice } = req.query;
@@ -476,7 +468,6 @@ app.get('/read', requireAuth, async (req, res) => {
     const query = {};
 
     if (name) {
-      // case-insensitive "contains" search on name
       query.name = { $regex: name, $options: 'i' };
     }
 
@@ -530,9 +521,7 @@ app.get('/read', requireAuth, async (req, res) => {
   }
 });
 
-// --------------------------
-// RESTful Menu API Endpoints
-// --------------------------
+
 
 const buildMenuQuery = (filters = {}) => {
   const { name, category, minPrice, maxPrice } = filters;
@@ -589,7 +578,7 @@ const validateMenuPayload = (body, { partial = false } = {}) => {
   return { data, errors };
 };
 
-// List menus with optional filters
+
 app.get('/api/menus', async (req, res) => {
   try {
     const query = buildMenuQuery({
@@ -607,7 +596,6 @@ app.get('/api/menus', async (req, res) => {
   }
 });
 
-// Retrieve single menu
 app.get('/api/menus/:id', async (req, res) => {
   try {
     const item = await Menu.findById(req.params.id);
@@ -621,7 +609,6 @@ app.get('/api/menus/:id', async (req, res) => {
   }
 });
 
-// Create menu
 app.post('/api/menus', async (req, res) => {
   const { data, errors } = validateMenuPayload(req.body);
   if (errors.length) {
@@ -637,7 +624,6 @@ app.post('/api/menus', async (req, res) => {
   }
 });
 
-// Replace menu
 app.put('/api/menus/:id', async (req, res) => {
   const { data, errors } = validateMenuPayload(req.body);
   if (errors.length) {
@@ -661,7 +647,6 @@ app.put('/api/menus/:id', async (req, res) => {
   }
 });
 
-// Partial update
 app.patch('/api/menus/:id', async (req, res) => {
   const { data, errors } = validateMenuPayload(req.body, { partial: true });
   if (errors.length) {
@@ -686,7 +671,6 @@ app.patch('/api/menus/:id', async (req, res) => {
   }
 });
 
-// Delete menu
 app.delete('/api/menus/:id', async (req, res) => {
   try {
     const deleted = await Menu.findByIdAndDelete(req.params.id);
@@ -699,7 +683,7 @@ app.delete('/api/menus/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete menu item.' });
   }
 });
-// Start server
+
 const PORT = process.env.PORT || 8099;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
